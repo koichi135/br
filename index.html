@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>インターネット・バックルームズ</title>
+    <meta name="description" content="黎明期のインターネットが染み込んだバックルームを探索する3Dホラーゲーム" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <div id="start-screen" class="screen">
+      <div class="screen-inner">
+        <h1 class="game-title">インターネット<br />バックルームズ</h1>
+        <p class="subtitle">-- the backrooms of the world wide web --</p>
+        <p class="flavor">
+          目が覚めると、そこは黄ばんだ壁紙とブーンと鳴る蛍光灯だけの部屋だった。<br />
+          部屋の隅にはブラウン管モニターが置かれ、誰かのホームページが今も光っている。<br />
+          4つの端末から「アクセスコード」を集め、ログオフ端末から回線を切断して脱出せよ。<br />
+          ただし、モニターを覗くたびに &mdash; <span class="retro-blink">何か</span> があなたに気づいていく。
+        </p>
+        <div class="howto">
+          <div><b>WASD / 矢印キー</b> 移動</div>
+          <div><b>Shift</b> 走る（音が大きくなる）</div>
+          <div><b>マウス</b> 視点</div>
+          <div><b>F</b> 懐中電灯</div>
+          <div><b>E</b> 端末を使う</div>
+          <div><b>Esc</b> ウィンドウを閉じる</div>
+        </div>
+        <button id="start-btn" class="retro-button">接続する &gt;&gt;</button>
+        <p class="hint">音声が出ます。ヘッドホン推奨。クリックでゲーム開始。</p>
+      </div>
+    </div>
+
+    <div id="hud" class="hidden">
+      <div class="hud-top-left">
+        <div class="hud-label">ACCESS CODES</div>
+        <div id="code-counter" class="hud-codes">0 / 4</div>
+      </div>
+      <div class="hud-top-right">
+        <div class="hud-label">SIGNAL</div>
+        <div id="signal-meter" class="signal-meter">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="hud-label" style="margin-top:6px;">BATTERY</div>
+        <div class="battery-meter"><div id="battery-fill" class="battery-fill"></div></div>
+      </div>
+      <div id="crosshair">+</div>
+      <div id="interact-prompt" class="interact-prompt hidden">[E] 接続する</div>
+      <div class="hud-bottom-left">
+        <div class="hud-label">STAMINA</div>
+        <div class="stamina-meter"><div id="stamina-fill" class="stamina-fill"></div></div>
+      </div>
+    </div>
+
+    <div id="resume-hint" class="interact-prompt hidden" style="bottom: 50%; z-index: 40;">クリックして再開</div>
+
+    <div id="end-screen" class="screen hidden">
+      <div class="screen-inner">
+        <h1 id="end-title" class="game-title"></h1>
+        <p id="end-message" class="flavor"></p>
+        <button id="retry-btn" class="retro-button">もう一度接続する &gt;&gt;</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
