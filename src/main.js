@@ -8,6 +8,7 @@ import { Terminal } from './game/Terminal.js';
 import { AudioManager } from './game/AudioManager.js';
 import { PostFX } from './game/PostFX.js';
 import { HUD } from './game/HUD.js';
+import { TouchControls } from './game/TouchControls.js';
 
 const CODE_TARGET = 4;
 const ENTITY_ACTIVATION_DELAY_MS = 16000;
@@ -25,6 +26,10 @@ class Game {
 
     this.audio = new AudioManager();
     this.hud = new HUD();
+
+    this.isTouch = TouchControls.isTouchDevice();
+    this.touchControls = new TouchControls(this.camera);
+    this.touchControls.onInteract = () => this.interact();
 
     this.state = 'menu'; // menu | playing | ended
     this.overlayOpen = false;
@@ -44,7 +49,11 @@ class Game {
   }
 
   onKeyDown(e) {
-    if (e.code !== 'KeyE' || this.state !== 'playing' || this.overlayOpen) return;
+    if (e.code === 'KeyE') this.interact();
+  }
+
+  interact() {
+    if (this.state !== 'playing' || this.overlayOpen) return;
     const term = this.hoveredTerminal;
     if (!term) return;
     this.overlayOpen = true;
@@ -86,10 +95,18 @@ class Game {
     const spawnW = this.maze.worldOf(this.maze.spawn.x, this.maze.spawn.y);
     this.player.setSpawn(spawnW.x, spawnW.z);
     this.player.onFootstep = (sprinting) => this.audio.footstep(sprinting);
-    this.player.controls.addEventListener('unlock', () => {
-      if (this.state === 'playing' && !this.overlayOpen) this.resumeHint.classList.remove('hidden');
-    });
-    this.player.controls.addEventListener('lock', () => this.resumeHint.classList.add('hidden'));
+
+    this.touchControls.setPlayer(this.player);
+    if (this.isTouch) {
+      this.player.touchControls = this.touchControls;
+      this.touchControls.enable();
+    } else {
+      this.touchControls.disable();
+      this.player.controls.addEventListener('unlock', () => {
+        if (this.state === 'playing' && !this.overlayOpen) this.resumeHint.classList.remove('hidden');
+      });
+      this.player.controls.addEventListener('lock', () => this.resumeHint.classList.add('hidden'));
+    }
 
     this.entity = new Entity(this.scene, this.maze, this.world);
     this.entity.onCatch = () => this.onCaught();
@@ -110,7 +127,7 @@ class Game {
       if (this.entity) this.entity.activate();
     }, ENTITY_ACTIVATION_DELAY_MS);
 
-    this.player.controls.lock();
+    if (!this.isTouch) this.player.controls.lock();
   }
 
   buildTerminals() {
@@ -154,6 +171,7 @@ class Game {
 
   showEnd(won) {
     this.hud.hide();
+    this.touchControls.disable();
     this.resumeHint.classList.add('hidden');
     const screen = document.getElementById('end-screen');
     const title = document.getElementById('end-title');
@@ -186,6 +204,7 @@ class Game {
     }
     this.hoveredTerminal = hovered;
     this.hud.setPrompt(hovered ? (hovered.isExit ? '[E] ログオフ端末を使う' : '[E] 端末に接続する') : null);
+    this.touchControls.setInteractVisible(!!hovered);
 
     const distToEntity = this.entity.worldPosition().distanceTo(
       new THREE.Vector3(this.player.position.x, 0, this.player.position.z)
@@ -207,6 +226,7 @@ class Game {
 }
 
 const game = new Game();
+if (import.meta.env.DEV) window.__game = game;
 function animate() {
   requestAnimationFrame(animate);
   game.update();

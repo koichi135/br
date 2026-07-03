@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>インターネット・バックルームズ</title>
     <meta name="description" content="黎明期のインターネットが染み込んだバックルームを探索する3Dホラーゲーム" />
   </head>
@@ -27,6 +27,7 @@
           <div><b>E</b> 端末を使う</div>
           <div><b>Esc</b> ウィンドウを閉じる</div>
         </div>
+        <p class="hint">スマホの場合：画面をドラッグで視点操作、左下のスティックで移動します。</p>
         <button id="start-btn" class="retro-button">接続する &gt;&gt;</button>
         <p class="hint">音声が出ます。ヘッドホン推奨。クリックでゲーム開始。</p>
       </div>
@@ -54,6 +55,20 @@
     </div>
 
     <div id="resume-hint" class="interact-prompt hidden" style="bottom: 50%; z-index: 40;">クリックして再開</div>
+
+    <div id="touch-controls" class="hidden">
+      <div id="touch-look-layer"></div>
+      <div id="joystick-base">
+        <div id="joystick-knob"></div>
+      </div>
+      <button id="touch-flashlight-btn" class="touch-btn" aria-label="懐中電灯">🔦</button>
+      <button id="touch-interact-btn" class="touch-btn" aria-label="端末を使う">接続</button>
+    </div>
+
+    <div id="rotate-hint">
+      <div class="rotate-icon">📱</div>
+      <p>画面を横向きにしてください</p>
+    </div>
 
     <div id="end-screen" class="screen hidden">
       <div class="screen-inner">

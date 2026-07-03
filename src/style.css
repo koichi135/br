@@ -348,3 +348,92 @@ html, body {
     radial-gradient(circle at 50% 40%, rgba(255,255,255,0.9) 0%, rgba(0,0,0,0.95) 55%),
     repeating-linear-gradient(0deg, #200 0px, #200 2px, #000 3px, #000 5px);
 }
+
+/* ---------- Touch controls ---------- */
+#touch-controls {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+}
+#touch-look-layer {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+#joystick-base {
+  position: absolute;
+  left: 26px;
+  bottom: 26px;
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  background: rgba(20, 18, 6, 0.35);
+  border: 2px solid rgba(244, 233, 168, 0.35);
+  touch-action: none;
+}
+#joystick-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  margin-left: -26px;
+  margin-top: -26px;
+  border-radius: 50%;
+  background: rgba(244, 233, 168, 0.45);
+  border: 2px solid rgba(244, 233, 168, 0.7);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.touch-btn {
+  position: absolute;
+  bottom: 34px;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(20, 18, 6, 0.45);
+  border: 2px solid rgba(244, 233, 168, 0.35);
+  color: #f4e9a8;
+  font-size: 1.5rem;
+  font-family: monospace;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#touch-flashlight-btn { right: 118px; }
+#touch-interact-btn { right: 26px; font-size: 0.95rem; }
+.touch-btn-active {
+  background: rgba(122, 111, 56, 0.55);
+  border-color: #f4e9a8;
+  box-shadow: 0 0 14px rgba(244, 233, 168, 0.5);
+}
+
+#rotate-hint {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #05040a;
+  color: #f4e9a8;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: monospace;
+}
+.rotate-icon {
+  font-size: 3rem;
+  animation: rotate-hint-spin 1.8s ease-in-out infinite;
+  margin-bottom: 12px;
+}
+@keyframes rotate-hint-spin {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
+}
+@media (pointer: coarse) and (orientation: portrait) {
+  #rotate-hint { display: flex; }
+}
+@media (pointer: coarse) {
+  .retro-close { width: 40px; height: 36px; font-size: 1.1rem; }
+  .retro-titlebar { padding: 10px 8px; }
+}

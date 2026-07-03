@@ -25,6 +25,7 @@ export class Player {
     this._stepAccum = 0;
     this.onFootstep = null; // callback(sprinting)
     this.frozen = false;
+    this.touchControls = null; // set by Game on touch devices
 
     this._distSinceStep = 0;
 
@@ -94,12 +95,20 @@ export class Player {
 
   update(dt) {
     if (this.frozen) return;
-    const keys = this.keys;
-    const forward = (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0) - (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0);
-    const strafe = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0) - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0);
-    const wantSprint = (keys.has('ShiftLeft') || keys.has('ShiftRight')) && forward > 0 && this.stamina > 2;
+    let forward, strafe, wantSprint;
 
-    this.moving = forward !== 0 || strafe !== 0;
+    if (this.touchControls && this.touchControls.enabled) {
+      forward = -this.touchControls.moveVec.y;
+      strafe = this.touchControls.moveVec.x;
+      wantSprint = Math.hypot(forward, strafe) > 0.82 && this.stamina > 2;
+    } else {
+      const keys = this.keys;
+      forward = (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0) - (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0);
+      strafe = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0) - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0);
+      wantSprint = (keys.has('ShiftLeft') || keys.has('ShiftRight')) && forward > 0 && this.stamina > 2;
+    }
+
+    this.moving = Math.hypot(forward, strafe) > 0.05;
     this.sprinting = this.moving && wantSprint;
 
     const speed = this.sprinting ? SPRINT_SPEED : WALK_SPEED;
@@ -110,8 +119,11 @@ export class Player {
       this.stamina = Math.min(100, this.stamina + dt * 12);
     }
 
+    // Keyboard input is exactly -1/0/1 per axis (diagonals normalize to full
+    // speed, as before); touch input is analog and keeps partial magnitude
+    // for gentler thumb-stick movement.
     const dir = new THREE.Vector3(strafe, 0, -forward);
-    if (dir.lengthSq() > 0) dir.normalize();
+    if (dir.length() > 1) dir.normalize();
 
     if (this.moving) {
       const obj = this.controls.object;
